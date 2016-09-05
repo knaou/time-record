@@ -1,0 +1,39 @@
+<h2>INPUT</h2>
+<p>
+  <h3>Day:</h3>
+  <%= @day.day %> <%= link_to 'Create-TODAY', home_input_path(day_id: 'today') %>
+
+  <a href="javascript:void(0)" onclick="$('#select_days').toggle()">Select-other-day</a>
+  <div id="select_days" style="display: none;">
+    <hr>
+    <ul>
+      <% Day.all.each do |day| %>
+        <li>
+          <%= link_to day.day, home_input_path(day_id: day.id) %>
+        </li>
+      <% end %>
+    </ul>
+    <hr>
+  </div>
+  <hr>
+  <h3>Time Entries</h3>
+
+  <% Type.order(:weight).all.each do |type| %>
+    <p>
+      <h4><%= type.name %></h4>
+      <ol>
+        <% TimeEntry.where(day: @day, type: type).order(:id).all.each do |entry| %>
+          <li><%= entry.second %> sec</li>
+        <% end %>
+        <%= form_for(TimeEntry.new) do |f| %>
+            <%= hidden_field_tag :day_id, @day.id %>
+            <%= f.hidden_field :day_id, value: @day.id %>
+            <%= f.hidden_field :type_id, value: type.id %>
+            <%= f.number_field :second %> <%= f.submit 'ADD' %>
+        <% end %>
+      </ol>
+    </p>
+
+  <% end %>
+
+</p>

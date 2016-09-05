@@ -1,0 +1,53 @@
+<h2>SHOW</h2>
+
+<%# TODO:Temporary implements %>
+<form action="<%= home_index_path %>" method="get">
+<%
+  all_clear = @types.count == Type.count
+  Type.order(:weight).each_with_index do |type, index| %>
+      <input <%= !all_clear && @types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%=type.id%>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
+      <label for="type_<%=type.id%>"><%= type.name %></label>
+      <% if (index + 1) % 4 == 0 %><br><% end %>
+<% end %>
+  <input type="submit" value="Filter">
+  [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', false)">Clear-checks</a>]-
+  [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', true)">Check-all</a>]
+</form>
+
+<canvas id="graph" width="720" height="480"></canvas>
+<ul id="legend"></ul>
+
+<script type="text/javascript">
+  $(function(){
+    var data = {
+      labels : <%= @day_labels.to_json.html_safe %>,
+      datasets : [
+        <% @entry_label_map.each_with_index do |(type, data), index|
+          sels = [250,100,150,200,50]
+          r = sels[index % sels.length]
+          g = sels[(index + 1) % sels.length]
+          b = sels[(index + 2) % sels.length]
+          rgb = "#{r},#{g},#{b}"
+        %>
+        {
+          label : "<%= type.name %>",
+          tension: 0,
+          backgroundColor : "rgba(<%= rgb %>,0.2)",
+          pointBorderColor : "rgba(<%= rgb %>,1)",
+          data : <%= data.to_json.html_safe %>
+        },
+        <% end %>
+      ]
+    };
+    var ctx = document.getElementById("graph").getContext("2d");
+    new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+        pointDot : true,
+        showTooltips: true
+      }
+    });
+  });
+
+</script>
