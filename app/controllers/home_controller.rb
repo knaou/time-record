@@ -9,14 +9,32 @@ class HomeController < ApplicationController
       @types = Type.order(:weight)
     end
 
+    # TODO: move to lib/
+
     @day_labels = []
     @entry_label_map = Hash.new { |hash, key| hash[key] = [] }
 
     days.each do |day|
-      @day_labels << "#{day.day.month}/#{day.day.day}"
+      # we can optimize this logic to 1 query
+      max = @types.map {|type| TimeEntry.where(day: day, type: type).count }.max
+      if max > 0
+        max.times { |i|
+          str = "#{day.day.month}/#{day.day.day}"
+          if max > 1
+            str += "_#{i+1}"
+          end
+          @day_labels << str
+        }
+      end
+
       @types.each do |type|
-        te = TimeEntry.where(day: day, type: type).first
-        @entry_label_map[type] << (te.present? ? te.second : 0)
+        entries = TimeEntry.where(day: day, type: type)
+        entries.each do |te|
+          @entry_label_map[type] << te.second
+        end
+        (0...(max - entries.count)).each {
+          @entry_label_map[type] << nil
+        }
       end
     end
   end
