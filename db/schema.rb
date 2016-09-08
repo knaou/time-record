@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20160904195237) do
   create_table "time_entries", force: :cascade do |t|
     t.integer  "day_id"
     t.integer  "type_id"
-    t.integer  "second"
+    t.float    "second"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
