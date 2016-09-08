@@ -29,7 +29,7 @@
             <%= hidden_field_tag :day_id, @day.id %>
             <%= f.hidden_field :day_id, value: @day.id %>
             <%= f.hidden_field :type_id, value: type.id %>
-            <%= f.number_field :second %> <%= f.submit 'ADD' %>
+            <%= f.number_field :second, :step => "0.01" %> <%= f.submit 'ADD' %>
         <% end %>
       </ol>
     </p>

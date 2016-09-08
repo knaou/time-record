@@ -13,7 +13,7 @@
 
   <div class="field">
     <%= f.label :second %><br>
-    <%= f.number_field :second %>
+    <%= f.number_field :second, :step => "0.01" %>
   </div>
   <div class="actions">
     <%= f.submit %>
