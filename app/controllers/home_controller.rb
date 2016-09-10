@@ -7,9 +7,9 @@ class HomeController < ApplicationController
     @days = params[:days].present? ? params[:days].to_i : nil
 
     if type_ids && type_ids.count > 0
-      @types = Type.order(:weight).where('id in (?)', type_ids)
+      @types = Type.order(:position).where('id in (?)', type_ids)
     else
-      @types = Type.order(:weight)
+      @types = Type.order(:position)
     end
 
     # TODO: move to lib/

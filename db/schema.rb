@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160904195237) do
+ActiveRecord::Schema.define(version: 20160910192619) do
 
   create_table "days", force: :cascade do |t|
     t.date     "day"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20160904195237) do
 
   create_table "types", force: :cascade do |t|
     t.string   "name"
-    t.integer  "weight"
+    t.integer  "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
