@@ -37,24 +37,6 @@
       </li>
     </ul>
   </div>
-
-  <% Type.order(:weight).all.each do |type| %>
-    <p>
-      <h4><%= type.name %></h4>
-      <ol>
-        <% TimeEntry.where(day: @day, type: type).order(:id).all.each do |entry| %>
-          <li><%= entry.second %> sec</li>
-        <% end %>
-        <%= form_for(TimeEntry.new) do |f| %>
-            <%= hidden_field_tag :day_id, @day.id %>
-            <%= f.hidden_field :day_id, value: @day.id %>
-            <%= f.hidden_field :type_id, value: type.id %>
-            <%= f.number_field :second, :step => "0.01" %> <%= f.submit 'ADD' %>
-        <% end %>
-      </ol>
-    </p>
-
-  <% end %>
   <script>
     var app = angular.module('myApp', []);
     app.config(["$httpProvider", function($httpProvider) {
