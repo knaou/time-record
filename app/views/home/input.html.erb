@@ -16,7 +16,27 @@
     <hr>
   </div>
   <hr>
-  <h3>Time Entries</h3>
+  <div ng-app="myApp" ng-controller="entries" >
+    <h3>Time Entries</h3>
+    <ul>
+      <li ng-repeat="type in data">
+        {{type.type_name}}
+        <ul>
+          <li ng-repeat="entry in type.time_entries" >
+            <span ng-show="entry.deleted_flag">deleted.</span>
+            <span ng-hide="entry.deleted_flag">
+              {{entry.second}} [<a href="javascript:void(0)" ng-click="delete_time(entry)">x</a>]
+            </span>
+          </li>
+          <li>
+            <form ng-submit="add_time(type)">
+            <input type="number" step="0.01" ng-model="type.new_time"><input type="submit">
+            </form>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
   <% Type.order(:weight).all.each do |type| %>
     <p>
@@ -35,5 +55,64 @@
     </p>
 
   <% end %>
+  <script>
+    var app = angular.module('myApp', []);
+    app.config(["$httpProvider", function($httpProvider) {
+      csrfToken = $('meta[name=csrf-token]').attr('content');
+      $httpProvider.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+    }]);
+
+    app.controller('entries',['$scope', '$http', function($scope, $http){
+      $scope.data = [];
+
+      $scope.add_time = function(type) {
+        new_entry = {
+          day_id: <%= @day.id %>,
+          type_id: type.id,
+          second: type.new_time
+        };
+        $http({
+          method: 'POST',
+          url: '<%= add_time_time_entries_path %>',
+          data: new_entry
+        }).success(function(data, status, headers, config){
+          type.time_entries.push(data);
+          type.new_time = null;
+        }).error(function(data, status, headers, config){
+          alert('Sorry, detected error.');
+        });
+      };
+
+      $scope.delete_time = function(entry) {
+        $http({
+          method: 'POST',
+          url: '<%= delete_time_time_entries_path %>',
+          data: {
+            entry_id: entry.id
+          }
+        }).success(function(data, status, headers, config){
+          entry.deleted_flag = true;
+        }).error(function(data, status, headers, config){
+          alert('Sorry, detected error.');
+        });
+      }
+
+      $scope.refresh_data = function() {
+        $http({
+          method: 'GET',
+          url: '<%= entries_by_time_entries_path(day_id: @day.id) %>'
+        }).success(function(data, status, headers, config){
+          $scope.data = data;
+        }).error(function(data, status, headers, config){
+          alert('Sorry, detected error.');
+        });
+      };
+
+      $scope.refresh_data();
+    }]);
+
+  </script>
+
+
 
 </p>
