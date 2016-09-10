@@ -9,7 +9,8 @@ class TimeEntriesController < ApplicationController
     day_id = params[:day_id]
     type_id = params[:type_id]
     second = params[:second]
-    raise "Illegal arguments" if day_id.nil? || type_id.nil? || second.nil?
+    raise "Illegal arguments" if day_id.nil? || type_id.nil?
+    second = nil if second.blank?
 
     render json: TimeEntry.create!(day_id: day_id, type_id: type_id, second: second)
   end
