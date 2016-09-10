@@ -27,7 +27,7 @@ class EntryTypesController < ApplicationController
     @entry_type = EntryType.new(type_params)
 
     respond_to do |format|
-      if @entry_types.save
+      if @entry_type.save
         format.html { redirect_to @entry_type, notice: 'Type was successfully created.' }
         format.json { render :show, status: :created, location: @entry_type }
       else
