@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       post :delete_time
     end
   end
-  resources :types
+  resources :entry_types
   resources :days
 
   root 'home#index'
@@ -14,4 +14,5 @@ Rails.application.routes.draw do
   get 'home/index'
   get 'home/input'
   get 'home/other'
+  get 'home/download_csv'
 end

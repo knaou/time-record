@@ -1,4 +1,4 @@
-class Type < ActiveRecord::Base
+class EntryType < ActiveRecord::Base
   has_many :time_entries, dependent: :destroy
 
 end

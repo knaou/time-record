@@ -50,7 +50,7 @@
       $scope.add_time = function(type) {
         new_entry = {
           day_id: <%= @day.id %>,
-          type_id: type.id,
+          entry_type_id: type.id,
           second: type.new_time
         };
         $http({

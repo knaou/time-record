@@ -1,0 +1,1 @@
+json.array! @entry_types, partial: 'types/type', as: :type

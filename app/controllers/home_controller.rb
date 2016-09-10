@@ -1,3 +1,5 @@
+require 'csv'
+
 class HomeController < ApplicationController
   def index
     type_ids = params[:type_ids]
@@ -7,9 +9,9 @@ class HomeController < ApplicationController
     @days = params[:days].present? ? params[:days].to_i : nil
 
     if type_ids && type_ids.count > 0
-      @types = Type.order(:position).where('id in (?)', type_ids)
+      @entry_types = EntryType.order(:position).where('id in (?)', type_ids)
     else
-      @types = Type.order(:position)
+      @entry_types = EntryType.order(:position)
     end
 
     # TODO: move to lib/
@@ -25,7 +27,7 @@ class HomeController < ApplicationController
         end
     end.each do |day|
       # we can optimize this logic to 1 query
-      max = @types.map {|type| TimeEntry.where(day: day, type: type).count }.max
+      max = @entry_types.map {|type| TimeEntry.where(day: day, entry_type: type).count }.max
       if max > 0
         max.times { |i|
           str = "#{day.day.month}/#{day.day.day}"
@@ -36,8 +38,8 @@ class HomeController < ApplicationController
         }
       end
 
-      @types.each do |type|
-        entries = TimeEntry.where(day: day, type: type)
+      @entry_types.each do |type|
+        entries = TimeEntry.where(day: day, entry_type: type)
         entries.each do |te|
           @entry_label_map[type] << te.second
         end
@@ -61,6 +63,22 @@ class HomeController < ApplicationController
 
   def other
 
+  end
+
+  def download_csv
+    csv = CSV.generate do |csv|
+      types = EntryType.order(:position)
+      csv << ['day', 'index'] + types.map(&:name)
+
+      Day.all.each do |day|
+        entries = TimeEntry.array_by_day(day.id)
+        entries.each_with_index do |entry, index|
+          csv << [day.day, index + 1] + entry
+        end
+      end
+    end
+
+    send_data csv
   end
 
 end

@@ -12,12 +12,12 @@
   </thead>
 
   <tbody>
-    <% @types.each do |type| %>
+    <% @entry_types.each do |type| %>
       <tr>
         <td><%= type.name %></td>
         <td><%= type.position %></td>
         <td><%= link_to 'Show', type %></td>
-        <td><%= link_to 'Edit', edit_type_path(type) %></td>
+        <td><%= link_to 'Edit', edit_entry_type_path(type) %></td>
         <td><%= link_to 'Destroy', type, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
@@ -26,4 +26,4 @@
 
 <br>
 
-<%= link_to 'New Type', new_type_path %>
+<%= link_to 'New Type', new_entry_type_path %>
