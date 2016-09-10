@@ -1,19 +1,37 @@
 <h2>SHOW</h2>
 
 <%# TODO:Temporary implements %>
-<form action="<%= home_index_path %>" method="get">
-<%
-  all_clear = @types.count == Type.count
-  Type.order(:weight).each_with_index do |type, index| %>
-      <input <%= !all_clear && @types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%=type.id%>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
-      <label for="type_<%=type.id%>"><%= type.name %></label>
-      <% if (index + 1) % 4 == 0 %><br><% end %>
-<% end %>
-  <input type="submit" value="Filter">
-  [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', false)">Clear-checks</a>]-
-  [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', true)">Check-all</a>]
-</form>
+<h3>Options: [<a href="javascript:void(0)" onclick="$('#options_content').toggle(200);">open</a>]</h3>
+<div id="options_content" style="display: none;">
+  <form action="<%= home_index_path %>" method="get">
+    <p>
+      <%
+        all_clear = @types.count == Type.count
+        Type.order(:weight).each_with_index do |type, index| %>
+          <input <%= !all_clear && @types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%=type.id%>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
+          <label for="type_<%=type.id%>"><%= type.name %></label>
+          <% if (index + 1) % 4 == 0 %><br><% end %>
+      <% end %>
+    </p>
+    <p>
+      [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', false)">Clear-checks</a>]-
+      [<a href="javascript:void(0)" onclick="$('.tyype_filter').prop('checked', true)">Check-all</a>]
+    </p>
+    <p>
+      <label for="min">Min:</label> <input type="number" name="min" value="<%= @min %>">
+      <label for="max">Max:</label> <input type="number" name="max" value="<%= @max %>">
+      <label for="min">Steps:</label> <input type="number" name="steps" value="<%= @steps %>">
+    </p>
+    <p>
+      <label for="days">Showing days:</label> <input type="number" name="days" value="<%= @days %>">
+    </p>
+    <p>
+      <input type="submit" value="Apply">
+    </p>
 
+  </form>
+</div>
+<hr>
 <canvas id="graph" width="720" height="480"></canvas>
 <ul id="legend"></ul>
 
@@ -46,8 +64,22 @@
       options: {
         spanGaps: true,
         pointDot : true,
-        showTooltips: true
-      }
+        showTooltips: true,
+        responsive: true,
+        scales: {
+          yAxes: [{
+            display: true,
+            ticks: {
+              <%= @steps ? "fixedStepSize:#{@steps}," : "" %>
+              <%= @min ? "min:#{@min}," : "" %>
+              <%= @max ? "max:#{@max}," : "" %>
+              callback: function(value){
+                return value+'sec';
+              }
+            }
+          }]
+        }
+       }
     });
   });
 

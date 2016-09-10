@@ -1,8 +1,11 @@
 class HomeController < ApplicationController
   def index
     type_ids = params[:type_ids]
+    @min = params[:min].present? ? params[:min].to_i : nil
+    @max = params[:max].present? ? params[:max].to_i : nil
+    @steps = params[:steps].present? ? params[:steps].to_i : nil
+    @days = params[:days].present? ? params[:days].to_i : nil
 
-    days = Day.order(:day)
     if type_ids && type_ids.count > 0
       @types = Type.order(:weight).where('id in (?)', type_ids)
     else
@@ -14,7 +17,13 @@ class HomeController < ApplicationController
     @day_labels = []
     @entry_label_map = Hash.new { |hash, key| hash[key] = [] }
 
-    days.each do |day|
+    begin
+        if @days.nil?
+          Day.order(:day)
+        else
+          Day.order('day DESC').limit(@days).to_a.reverse
+        end
+    end.each do |day|
       # we can optimize this logic to 1 query
       max = @types.map {|type| TimeEntry.where(day: day, type: type).count }.max
       if max > 0
