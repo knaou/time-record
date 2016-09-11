@@ -66,7 +66,7 @@ class HomeController < ApplicationController
 
   def download_csv
     csv = CSV.generate do |csv|
-      csv << ['day', 'index'] + EntryType.map(&:name)
+      csv << ['day', 'index'] + EntryType.all.map(&:name)
 
       Day.all.each do |day|
         entries = TimeEntry.array_by_day(day.id)
@@ -76,7 +76,7 @@ class HomeController < ApplicationController
       end
     end
 
-    send_data csv
+    send_data csv.encode(Encoding::SJIS)
   end
 
 end
