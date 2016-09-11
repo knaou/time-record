@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     if type_ids && type_ids.count > 0
       @entry_types = EntryType.order(:position).where('id in (?)', type_ids)
     else
-      @entry_types = EntryType.order(:position)
+      @entry_types = EntryType.order(:position).filter_by_default
     end
 
     # TODO: move to lib/
