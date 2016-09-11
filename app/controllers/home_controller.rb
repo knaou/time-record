@@ -28,7 +28,7 @@ class HomeController < ApplicationController
     end.each do |day|
       # we can optimize this logic to 1 query
       max = @entry_types.map {|type| TimeEntry.where(day: day, entry_type: type).count }.max
-      if max > 0
+      if max &&  max > 0
         max.times { |i|
           str = "#{day.day.month}/#{day.day.day}"
           if max > 1
