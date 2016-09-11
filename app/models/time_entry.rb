@@ -16,7 +16,7 @@ class TimeEntry < ActiveRecord::Base
     end
 
     ret = []
-    (0..max_count).each do |i|
+    (0...max_count).each do |i|
       ret << type_ids.map {|type_id| (type_array[type_id].count < i) ? '' : (type_array[type_id][i] || '') }
     end
 
