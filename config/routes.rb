@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   get 'home/input'
   get 'home/other'
   get 'home/download_csv'
+  get 'home/download_memo_csv'
 end

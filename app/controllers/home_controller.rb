@@ -69,15 +69,34 @@ class HomeController < ApplicationController
       csv << ['day', 'index'] + EntryType.all.map(&:name)
 
       Day.all.each do |day|
-        entries = TimeEntry.seconds_by_day(day.id)
-        entries.each_with_index do |entry, index|
-          csv << [day.day, index + 1] + entry
+        entries = TimeEntry.entries_by_day(day.id)
+        entries.each_with_index do |es, index|
+          csv << [day.day, index + 1] + es.map{|e| e.try(&:second)}
         end
       end
     end
 
     send_data csv.encode(Encoding::SJIS),
               filename: 'all-data.csv',
+              type: 'text/csv; charset=shift_jis'
+  end
+
+  def download_memo_csv
+    csv = CSV.generate do |csv|
+      csv << ['day', 'index', 'data-type', 'Memo']
+
+      Day.all.each do |day|
+        entries = TimeEntry.entries_by_day(day.id)
+        entries.each_with_index do |es, index|
+          es.select{|e| e.try(&:memo).present? }.each do |e|
+            csv << [day.day, index + 1, e.entry_type.name, e.memo]
+          end
+        end
+      end
+    end
+
+    send_data csv.encode(Encoding::SJIS),
+              filename: 'memo-data.csv',
               type: 'text/csv; charset=shift_jis'
   end
 
