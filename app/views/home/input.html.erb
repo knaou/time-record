@@ -24,17 +24,34 @@
         <ul>
           <li ng-repeat="entry in type.time_entries" >
             <span ng-show="entry.deleted_flag">deleted.</span>
-            <span ng-hide="entry.deleted_flag">
+            <span ng-show="!entry.deleted_flag && entry.editing_flag">
+              <form ng-submit="edit_time(entry)">
+              Edit:
+              Second:<input type="number" step="0.01" ng-model="entry.second">
+              Memo:<input type="text" ng-model="entry.memo">
+              <input type="submit">
+              [<a href="javascript:void(0)" ng-click="entry.editing_flag=false">cancel</a>]
+            </form>
+            </span>
+            <span ng-hide="entry.deleted_flag || entry.editing_flag">
               {{entry.second}} / {{entry.memo}}
-              [<a href="javascript:void(0)" ng-click="delete_time(entry)">x</a>]
+              [<a href="javascript:void(0)" ng-click="entry.editing_flag=true">edit</a>]
+              [<a href="javascript:void(0)" ng-click="delete_time(entry)">delete</a>]
             </span>
           </li>
           <li>
-            <form ng-submit="add_time(type)">
-              Second:<input type="number" step="0.01" ng-model="type.new_time">
-              Memo:<input type="text" ng-model="type.new_memo">
-              <input type="submit">
-            </form>
+            <span ng-show="type.adding_flag">
+              <form ng-submit="add_time(type)">
+                Add:
+                Second:<input type="number" step="0.01" ng-model="type.new_time">
+                Memo:<input type="text" ng-model="type.new_memo">
+                <input type="submit">
+                [<a href="javascript:void(0)" ng-click="type.adding_flag=false">cancel</a>]
+              </form>
+            </span>
+            <span ng-hide="type.adding_flag">
+              [<a href="javascript:void(0)" ng-click="type.adding_flag=true">add</a>]
+            </span>
           </li>
         </ul>
       </li>
@@ -64,6 +81,18 @@
         }).success(function(data, status, headers, config){
           type.time_entries.push(data);
           type.new_time = null;
+        }).error(function(data, status, headers, config){
+          alert('Sorry, detected error.');
+        });
+      };
+
+      $scope.edit_time = function(entry) {
+        $http({
+          method: 'POST',
+          url: '<%= edit_time_time_entries_path %>',
+          data: entry
+        }).success(function(data, status, headers, config){
+          entry.editing_flag = false;
         }).error(function(data, status, headers, config){
           alert('Sorry, detected error.');
         });

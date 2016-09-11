@@ -15,6 +15,26 @@ class TimeEntriesController < ApplicationController
         memo: memo)
   end
 
+  def edit_time
+    id = params[:id]
+    day_id = params[:day_id]
+    entry_type_id = params[:entry_type_id]
+    second = params[:second]
+    memo = params[:memo]
+
+    raise "Illegal arguments" if id.nil? || day_id.nil? || entry_type_id.nil?
+    second = nil if second.blank?
+
+    te = TimeEntry.find(id)
+    te.day_id = day_id
+    te.entry_type_id = entry_type_id
+    te.second = second
+    te.memo = memo
+    te.save!
+
+    render json: te
+  end
+
   def delete_time
     entry_id = params[:entry_id]
     raise "Illegal arguments" if entry_id.nil?

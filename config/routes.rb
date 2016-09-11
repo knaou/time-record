@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     collection do
       get :editable_entries_by
       post :add_time
+      post :edit_time
       post :delete_time
     end
   end
