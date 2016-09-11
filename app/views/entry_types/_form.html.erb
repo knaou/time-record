@@ -15,10 +15,26 @@
     <%= f.label :name %><br>
     <%= f.text_field :name %>
   </div>
-    <div class="field">
-      <%= f.label :is_default %><br>
-      <%= f.check_box :is_default %>
-    </div>
+
+  <div class="field">
+    <%= f.label :value_type %><br>
+    <%= f.select :value_type, [["Manually input", "manual"], ["Diff between two types", "diff"]] %>
+  </div>
+
+  <div class="field">
+    <%= f.label :diff_entry_type1_id %><br>
+    <%= f.collection_select :diff_entry_type1_id, EntryType.manual.where('id != ?', @entry_type.id), :id, :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :diff_entry_type2_id %><br>
+    <%= f.collection_select :diff_entry_type2_id, EntryType.manual.where('id != ?', @entry_type.id), :id, :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :is_default %><br>
+    <%= f.check_box :is_default %>
+  </div>
   <div class="field">
     <%= f.label :position %><br>
     <%= f.number_field :position %>

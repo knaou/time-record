@@ -77,12 +77,12 @@
         }).error(function(data, status, headers, config){
           alert('Sorry, detected error.');
         });
-      }
+      };
 
       $scope.refresh_data = function() {
         $http({
           method: 'GET',
-          url: '<%= entries_by_time_entries_path(day_id: @day.id) %>'
+          url: '<%= editable_entries_by_time_entries_path(day_id: @day.id) %>'
         }).success(function(data, status, headers, config){
           $scope.data = data;
         }).error(function(data, status, headers, config){

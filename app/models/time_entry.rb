@@ -2,6 +2,12 @@ class TimeEntry < ActiveRecord::Base
   belongs_to :day
   belongs_to :entry_type
 
+  def self.new_as_diff(day, entry_type, entry1, entry2)
+    self.new(day: day, entry_type: entry_type, second: ((entry1.second && entry2.second) ? (entry1.second - entry2.second) : nil))
+  end
+
+  # For CSV
+  # # TODO: impls here as commonly method
   def self.array_by_day(day_id, type_ids = nil)
     entries = where(day_id: day_id)
     if type_ids.blank?

@@ -18,16 +18,16 @@ class TimeEntriesController < ApplicationController
     render json: {result: 'ok'}
   end
 
-  def entries_by
+  def editable_entries_by
     day_id = params['day_id']
     raise "day_id is not set" if day_id.nil?
 
     ret = []
-    EntryType.order(:position).each do |type|
+    EntryType.manual.order(:position).each do |type|
       ret << {
           id: type.id,
           type_name: type.name,
-          time_entries: TimeEntry.where(day_id: day_id.to_i, entry_type_id: type.id)
+          time_entries: type.by_day(Day.find(day_id))
       }
     end
 

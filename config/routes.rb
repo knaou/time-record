@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :time_entries do
     collection do
-      get :entries_by
+      get :editable_entries_by
       post :add_time
       post :delete_time
     end
