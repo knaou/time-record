@@ -23,12 +23,12 @@
 
   <div class="field">
     <%= f.label :diff_entry_type1_id %><br>
-    <%= f.collection_select :diff_entry_type1_id, EntryType.manual.where('id != ?', @entry_type.id), :id, :name %>
+    <%= f.collection_select :diff_entry_type1_id, EntryType.manual.select{|t| t != @entry_type}, :id, :name %>
   </div>
 
   <div class="field">
     <%= f.label :diff_entry_type2_id %><br>
-    <%= f.collection_select :diff_entry_type2_id, EntryType.manual.where('id != ?', @entry_type.id), :id, :name %>
+    <%= f.collection_select :diff_entry_type2_id, EntryType.manual.select{|t| t != @entry_type}, :id, :name %>
   </div>
 
   <div class="field">
