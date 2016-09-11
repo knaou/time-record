@@ -25,12 +25,15 @@
           <li ng-repeat="entry in type.time_entries" >
             <span ng-show="entry.deleted_flag">deleted.</span>
             <span ng-hide="entry.deleted_flag">
-              {{entry.second}} [<a href="javascript:void(0)" ng-click="delete_time(entry)">x</a>]
+              {{entry.second}} / {{entry.memo}}
+              [<a href="javascript:void(0)" ng-click="delete_time(entry)">x</a>]
             </span>
           </li>
           <li>
             <form ng-submit="add_time(type)">
-            <input type="number" step="0.01" ng-model="type.new_time"><input type="submit">
+              Second:<input type="number" step="0.01" ng-model="type.new_time">
+              Memo:<input type="text" ng-model="type.new_memo">
+              <input type="submit">
             </form>
           </li>
         </ul>
@@ -51,7 +54,8 @@
         new_entry = {
           day_id: <%= @day.id %>,
           entry_type_id: type.id,
-          second: type.new_time
+          second: type.new_time,
+          memo: type.new_memo
         };
         $http({
           method: 'POST',

@@ -46,13 +46,17 @@
           g = sels[(index + 1) % sels.length]
           b = sels[(index + 2) % sels.length]
           rgb = "#{r},#{g},#{b}"
+
+          values = data && data.map{|second, memo| second}
+          memos = data && data.map{|second, memo| memo}
         %>
         {
           label : "<%= type.name %>",
           tension: 0,
           backgroundColor : "rgba(<%= rgb %>,0.2)",
           pointBorderColor : "rgba(<%= rgb %>,1)",
-          data : <%= data.to_json.html_safe %>
+          data : <%= values.to_json.html_safe %>,
+          memos : <%= memos.to_json.html_safe %>
         },
         <% end %>
       ]
@@ -78,8 +82,17 @@
               }
             }
           }]
+        },
+        tooltips: {
+          enabled: true,
+          mode: 'single',
+          callbacks: {
+            afterLabel: function(tooltipItem, data) {
+              return data.datasets[tooltipItem.datasetIndex].memos[tooltipItem.index];
+            }
+          }
         }
-       }
+      }
     });
   });
 

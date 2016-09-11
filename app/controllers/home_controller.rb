@@ -41,7 +41,7 @@ class HomeController < ApplicationController
       @entry_types.each do |type|
         entries = type.entries_by_day(day)
         entries.each do |te|
-          @entry_label_map[type] << te.second
+          @entry_label_map[type] << [te.second, te.memo]
         end
         (0...(max - entries.count)).each {
           @entry_label_map[type] << nil

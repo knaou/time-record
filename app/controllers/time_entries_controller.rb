@@ -4,10 +4,15 @@ class TimeEntriesController < ApplicationController
     day_id = params[:day_id]
     entry_type_id = params[:entry_type_id]
     second = params[:second]
+    memo = params[:memo]
     raise "Illegal arguments" if day_id.nil? || entry_type_id.nil?
     second = nil if second.blank?
 
-    render json: TimeEntry.create!(day_id: day_id, entry_type_id: entry_type_id, second: second)
+    render json: TimeEntry.create!(
+        day_id: day_id,
+        entry_type_id: entry_type_id,
+        second: second,
+        memo: memo)
   end
 
   def delete_time
@@ -37,6 +42,6 @@ class TimeEntriesController < ApplicationController
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def time_entry_params
-      params.require(:time_entry).permit(:day_id, :type_id, :second)
+      params.require(:time_entry).permit(:day_id, :type_id, :second, :memo)
     end
 end
