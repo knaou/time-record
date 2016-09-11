@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160910213436) do
+ActiveRecord::Schema.define(version: 20160911002831) do
 
   create_table "days", force: :cascade do |t|
     t.date     "day"
@@ -23,8 +23,9 @@ ActiveRecord::Schema.define(version: 20160910213436) do
   create_table "entry_types", force: :cascade do |t|
     t.string   "name"
     t.integer  "position"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "is_default", default: false
   end
 
   create_table "time_entries", force: :cascade do |t|
