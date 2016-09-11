@@ -11,7 +11,7 @@ class EntryType < ActiveRecord::Base
   scope :manual,  -> { where(value_type: 'manual') }
   scope :diff,  -> { where(value_type: 'diff') }
 
-  def by_day(day, walked_entry_type = [])
+  def entries_by_day(day, walked_entry_type = [])
     raise "Detect loop" if walked_entry_type.include?(self)
     walked_entry_type << self
 
@@ -20,8 +20,8 @@ class EntryType < ActiveRecord::Base
       when 'manual'
         time_entries.where(day: day)
       when 'diff'
-        entries1 = diff_entry_type1.by_day(day, walked_entry_type)
-        entries2 = diff_entry_type2.by_day(day, walked_entry_type)
+        entries1 = diff_entry_type1.entries_by_day(day, walked_entry_type)
+        entries2 = diff_entry_type2.entries_by_day(day, walked_entry_type)
         entries1.zip(entries2).select {|v1,v2| v1 && v2}.map do |e1, e2|
           TimeEntry.new_as_diff(day, self, e1, e2)
         end

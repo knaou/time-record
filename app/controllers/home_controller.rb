@@ -27,7 +27,7 @@ class HomeController < ApplicationController
         end
     end.each do |day|
       # we can optimize this logic to 1 query
-      max = @entry_types.map {|type| type.by_day(day).count }.max
+      max = @entry_types.map {|type| type.entries_by_day(day).count }.max
       if max &&  max > 0
         max.times { |i|
           str = "#{day.day.month}/#{day.day.day}"
@@ -39,7 +39,7 @@ class HomeController < ApplicationController
       end
 
       @entry_types.each do |type|
-        entries = type.by_day(day)
+        entries = type.entries_by_day(day)
         entries.each do |te|
           @entry_label_map[type] << te.second
         end
@@ -69,7 +69,7 @@ class HomeController < ApplicationController
       csv << ['day', 'index'] + EntryType.all.map(&:name)
 
       Day.all.each do |day|
-        entries = TimeEntry.array_by_day(day.id)
+        entries = TimeEntry.seconds_by_day(day.id)
         entries.each_with_index do |entry, index|
           csv << [day.day, index + 1] + entry
         end

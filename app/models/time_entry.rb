@@ -8,7 +8,8 @@ class TimeEntry < ActiveRecord::Base
 
   # For CSV
   # # TODO: impls here as commonly method
-  def self.array_by_day(day_id, type_ids = nil)
+  def self.seconds_by_day(day_id, type_ids = nil)
+    day = Day.find(day_id)
     entries = where(day_id: day_id)
     if type_ids.blank?
       type_ids = EntryType.all.map(&:id)
@@ -16,9 +17,8 @@ class TimeEntry < ActiveRecord::Base
 
     max_count = type_ids.map{|type_id| entries.where(entry_type_id: type_id).count }.max
     type_array = {}
-    type_ids.each do |type_id|
-      es = entries.where(entry_type_id: type_id)
-      type_array[type_id] = es.map(&:second)
+    type_ids.map{|id| EntryType.find(id) }.each do |type|
+      type_array[type.id] = type.entries_by_day(day).map(&:second)
     end
 
     ret = []

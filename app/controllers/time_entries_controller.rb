@@ -27,7 +27,7 @@ class TimeEntriesController < ApplicationController
       ret << {
           id: type.id,
           type_name: type.name,
-          time_entries: type.by_day(Day.find(day_id))
+          time_entries: type.entries_by_day(Day.find(day_id))
       }
     end
 
