@@ -5,6 +5,8 @@ class EntryType < ActiveRecord::Base
   belongs_to :diff_entry_type1, class_name: 'EntryType', foreign_key: 'diff_entry_type1_id'
   belongs_to :diff_entry_type2, class_name: 'EntryType', foreign_key: 'diff_entry_type2_id'
 
+  default_scope -> { order(:position) }
+
   scope :filter_by_default, -> { where(is_default: true) }
   scope :manual,  -> { where(value_type: 'manual') }
   scope :diff,  -> { where(value_type: 'diff') }

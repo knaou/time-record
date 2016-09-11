@@ -7,7 +7,7 @@
     <p>
       <%
         all_clear = @entry_types.count == EntryType.count
-        EntryType.order(:position).each_with_index do |type, index| %>
+        EntryType.all.each_with_index do |type, index| %>
           <input <%= !all_clear && @entry_types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%=type.id%>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
           <label for="type_<%=type.id%>"><%= type.name %></label>
           <% if (index + 1) % 4 == 0 %><br><% end %>

@@ -9,9 +9,9 @@ class HomeController < ApplicationController
     @days = params[:days].present? ? params[:days].to_i : nil
 
     if type_ids && type_ids.count > 0
-      @entry_types = EntryType.order(:position).where('id in (?)', type_ids)
+      @entry_types = EntryType.where('id in (?)', type_ids)
     else
-      @entry_types = EntryType.order(:position).filter_by_default
+      @entry_types = EntryType.filter_by_default
     end
 
     # TODO: move to lib/
@@ -62,13 +62,11 @@ class HomeController < ApplicationController
   end
 
   def other
-
   end
 
   def download_csv
     csv = CSV.generate do |csv|
-      types = EntryType.order(:position)
-      csv << ['day', 'index'] + types.map(&:name)
+      csv << ['day', 'index'] + EntryType.map(&:name)
 
       Day.all.each do |day|
         entries = TimeEntry.array_by_day(day.id)

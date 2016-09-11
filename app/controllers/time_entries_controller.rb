@@ -23,7 +23,7 @@ class TimeEntriesController < ApplicationController
     raise "day_id is not set" if day_id.nil?
 
     ret = []
-    EntryType.manual.order(:position).each do |type|
+    EntryType.manual.each do |type|
       ret << {
           id: type.id,
           type_name: type.name,
