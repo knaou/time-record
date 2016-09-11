@@ -1,6 +1,8 @@
 class EntryTypesController < ApplicationController
   before_action :set_type, only: [:show, :edit, :update, :destroy]
 
+  before_filter :auth_as_admin
+
   # GET /types
   # GET /types.json
   def index
