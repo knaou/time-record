@@ -76,7 +76,9 @@ class HomeController < ApplicationController
       end
     end
 
-    send_data csv.encode(Encoding::SJIS)
+    send_data csv.encode(Encoding::SJIS),
+              filename: 'all-data.csv',
+              type: 'text/csv; charset=shift_jis'
   end
 
 end
