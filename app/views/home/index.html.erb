@@ -8,9 +8,10 @@
       <%
         all_clear = @entry_types.count == EntryType.count
         EntryType.all.each_with_index do |type, index| %>
-          <input <%= !all_clear && @entry_types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%=type.id%>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
-          <label for="type_<%=type.id%>"><%= type.name %></label>
-          <% if (index + 1) % 4 == 0 %><br><% end %>
+          <input <%= !all_clear && @entry_types.include?(type) ? 'checked="checked"' : '' %> class="type_filter" id="type_<%= type.id %>" type="checkbox" name="type_ids[]" value="<%= type.id %>">
+          <label for="type_<%= type.id %>"><%= type.name %></label>
+          <% if (index + 1) % 4 == 0 %><br>
+          <% end %>
       <% end %>
     </p>
     <p>
@@ -18,12 +19,28 @@
       [<a href="javascript:void(0)" onclick="$('.type_filter').prop('checked', true)">Check-all</a>]
     </p>
     <p>
-      <label for="min">Min:</label> <input type="number" name="min" value="<%= @min %>">
-      <label for="max">Max:</label> <input type="number" name="max" value="<%= @max %>">
-      <label for="min">Steps:</label> <input type="number" name="steps" value="<%= @steps %>">
-    </p>
-    <p>
-      <label for="days">Showing days:</label> <input type="number" name="days" value="<%= @days %>">
+      <div class="form-inline">
+        <div class="form-group">
+          <label for="filter_min">Min</label>
+          <input type="number" name="min" class="form-control" id="filter_min" placeholder="min">
+        </div>
+        <div class="form-group">
+          <label for="filter_max">Max</label>
+          <input type="number" name="max" class="form-control" id="filter_max" placeholder="max">
+        </div>
+        <div class="form-group">
+          <label for="filter_steps">Step</label>
+          <input type="number" name="steps" class="form-control" id="filter_steps" placeholder="steps">
+        </div>
+        <div class="form-group">
+          <label for="filter_base">Base line</label>
+          <input type="number" name="base" class="form-control" id="filter_base" placeholder="Base line">
+        </div>
+        <div class="form-group">
+          <label for="filter_days">Days</label>
+          <input type="number" name="days" class="form-control" id="filter_days" placeholder="Days">
+        </div>
+      </div>
     </p>
     <p>
       <input type="submit" value="Apply">
@@ -36,10 +53,19 @@
 <ul id="legend"></ul>
 
 <script type="text/javascript">
-  $(function(){
+  $(function () {
     var data = {
-      labels : <%= @day_labels.to_json.html_safe %>,
-      datasets : [
+      labels: <%= @day_labels.to_json.html_safe %>,
+      datasets: [
+        <% if @base %>
+        {
+          label: "Base",
+          tension: 0,
+          backgroundColor: "rgba(0,0,0,0.2)",
+          pointBorderColor: "rgba(0,0,0,1)",
+          data: <%= ([@base] * @total_count).to_json.html_safe %>
+        },
+        <% end %>
         <% @entry_label_map.each_with_index do |(type, data), index|
           sels = [250,100,150,200,50]
           r = sels[index % sels.length]
@@ -51,12 +77,12 @@
           memos = data && data.map{|second, memo| memo}
         %>
         {
-          label : "<%= type.name %>",
+          label: "<%= type.name %>",
           tension: 0,
-          backgroundColor : "rgba(<%= rgb %>,0.2)",
-          pointBorderColor : "rgba(<%= rgb %>,1)",
-          data : <%= values.to_json.html_safe %>,
-          memos : <%= memos.to_json.html_safe %>
+          backgroundColor: "rgba(<%= rgb %>,0.2)",
+          pointBorderColor: "rgba(<%= rgb %>,1)",
+          data: <%= values.to_json.html_safe %>,
+          memos: <%= memos.to_json.html_safe %>
         },
         <% end %>
       ]
@@ -67,7 +93,7 @@
       data: data,
       options: {
         spanGaps: true,
-        pointDot : true,
+        pointDot: true,
         showTooltips: true,
         responsive: true,
         scales: {
@@ -77,8 +103,8 @@
               <%= @steps ? "fixedStepSize:#{@steps}," : "" %>
               <%= @min ? "min:#{@min}," : "" %>
               <%= @max ? "max:#{@max}," : "" %>
-              callback: function(value){
-                return value+'sec';
+              callback: function (value) {
+                return value + 'sec';
               }
             }
           }]
@@ -87,7 +113,7 @@
           enabled: true,
           mode: 'single',
           callbacks: {
-            afterLabel: function(tooltipItem, data) {
+            afterLabel: function (tooltipItem, data) {
               return data.datasets[tooltipItem.datasetIndex].memos[tooltipItem.index];
             }
           }

@@ -7,6 +7,7 @@ class HomeController < ApplicationController
     @max = params[:max].present? ? params[:max].to_i : nil
     @steps = params[:steps].present? ? params[:steps].to_i : nil
     @days = params[:days].present? ? params[:days].to_i : nil
+    @base = params[:base].present? ? params[:base].to_i : nil
 
     if type_ids && type_ids.count > 0
       @entry_types = EntryType.where('id in (?)', type_ids)
@@ -18,6 +19,8 @@ class HomeController < ApplicationController
 
     @day_labels = []
     @entry_label_map = Hash.new { |hash, key| hash[key] = [] }
+
+    @total_count = 0
 
     begin
         if @days.nil?
@@ -47,6 +50,8 @@ class HomeController < ApplicationController
           @entry_label_map[type] << nil
         }
       end
+
+      @total_count += max
     end
   end
 
